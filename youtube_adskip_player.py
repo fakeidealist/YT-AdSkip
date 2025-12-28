@@ -25,17 +25,32 @@ class YouTubePlayer:
         # Wait for video player and get the <video> element
         self.video_element = self.wait.until(EC.presence_of_element_located((By.TAG_NAME, "video")))
         print("Video player loaded.")
+        time.sleep(2)  # Small delay to allow autoplay to kick in if it will
+
+    def is_video_playing(self) -> bool:
+        """Check if the <video> element is currently playing using JS."""
+        if self.video_element:
+            try:
+                return not self.driver.execute_script("return arguments[0].paused;", self.video_element)
+            except Exception:
+                pass
+        return False
 
     def play_video(self):
+        """Only click play button if video is not already playing."""
+        if self.is_video_playing():
+            print("Video is already playing (autoplay detected). Skipping play button click.")
+            return
+
         try:
             play_button = self.wait.until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, "button.ytp-play-button.ytp-button"))
             )
             play_button.click()
             time.sleep(1)
-            print("Video started playing.")
+            print("Play button clicked. Video started playing.")
         except TimeoutException:
-            print("Video already playing or play button not needed.")
+            print("Play button not found or not needed (video likely already playing or in unusual state).")
 
     def print_video_title(self):
         """Fetch and print the video title once using the yt-formatted-string in ytd-watch-metadata."""
@@ -144,7 +159,7 @@ class YouTubePlayer:
             print("Moved to next video in playlist.")
             time.sleep(3)
             self.video_element = self.wait.until(EC.presence_of_element_located((By.TAG_NAME, "video")))
-            self.play_video()
+            self.play_video()  # Re-check autoplay for the new video
             self.title_printed = False  # Allow new title for next video
             return True
         except TimeoutException:
