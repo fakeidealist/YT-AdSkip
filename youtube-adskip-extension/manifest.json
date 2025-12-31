@@ -4,10 +4,10 @@
   "version": "1.2.0",
   "description": "Automatically skips skippable ads, mutes during ads, logs non-skippable ads, and continues playlists on YouTube.",
   "icons": {
-    "128": "icon128.png"
-	  "48": "icon48.png",
+    "128": "icon128.png",
+	"48": "icon48.png",
     "32": "icon32.png",	
-	  "16": "icon16.png"
+	"16": "icon16.png"
   },
   "host_permissions": [
     "*://www.youtube.com/*",
@@ -25,4 +25,5 @@
   ]
 
 }
+
 
